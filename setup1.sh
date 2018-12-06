@@ -49,13 +49,23 @@ fi &&
 if ! id -u lfs &>/dev/null; then
   sudo groupadd lfs &&
   sudo useradd -s /bin/bash -g lfs -m -k /dev/null lfs &&
-  echo lfs:U6aMy0wojraho | sudo chpasswd -e
+  echo lfs:U6aMy0wojraho | sudo chpasswd -e 
 fi &&
 sudo chown -R lfs $LFS/tools &&
 sudo chown -R lfs $LFS/sources &&
 
 sudo bash -c 'cat > /home/lfs/.bash_profile << "EOF"
-exec env -i HOME=$HOME TERM=$TERM PS1="'"\u:\w\$ "'" /bin/bash
+if [ -z "$auto_lfs" ]; then
+  exec env -i HOME=$HOME TERM=$TERM PS1="'"\u:\w\$ "'" /bin/bash
+else
+  set +h
+  umask 022
+  LFS=/mnt/lfs
+  LC_ALL=POSIX
+  LFS_TGT=$(uname -m)-lfs-linux-gnu
+  PATH=/tools/bin:/bin:/usr/bin
+  export LFS LC_ALL LFS_TGT PATH
+fi
 EOF' &&
 
 sudo bash -c 'cat > /home/lfs/.bashrc << "EOF"
@@ -69,14 +79,16 @@ export LFS LC_ALL LFS_TGT PATH
 EOF' &&
 
 export_line="export LFS=$LFS" &&
-if ! grep -F "$export_line" "$use_profile"; then
-  (echo "$export_line" >> ~/"$use_profile")
+if ! grep -F "$export_line" ~/"$use_profile"; then
+  echo "$export_line" >> ~/"$use_profile"
 fi &&
-if ! sudo grep -F "$export_line" "$root_profile"; then
-  (sudo bash -c "echo '$export_line' >> /root/$root_profile") 
+if ! sudo grep -F "$export_line" /root/"$root_profile"; then
+  sudo bash -c "echo '$export_line' >> /root/$root_profile"
 fi &&
 
-bash mysetup.sh &&
+if [ -e mysetup.sh ]; then
+bash mysetup.sh 
+fi &&
 
 echo "winner!" || echo "Loser!"
 
