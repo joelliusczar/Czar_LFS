@@ -1,20 +1,11 @@
 #!/bin/bash
+. install_help.sh
 
-time {
-app=file-5.34
-echo "Running $app"
-cd $LFS/sources
-rm -rf "$app"
-tar -xf "$app".tar.gz
-cd "$app" &&
+install_app() {
 ./configure --prefix=/tools &&
 make &&
 make check &&
-make install &&
-{ echo "Winner is $app!"; status=0; } ||
-{ echo "Loser is $app!"; status=1; };
-cd $LFS/sources
-rm -rf "$app"
+make install 
 }
 
-exit "$status"
+install_app_nest 'file-5.34' "$LFS/sources"

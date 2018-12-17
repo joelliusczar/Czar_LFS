@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[ -z "$LFS" ] && { echo "Missing env var"; exit 1; }
+
 mkdir -pv $LFS/{dev,proc,sys,run} &&
 mknod -m 600 $LFS/dev/console c 5 1 &&
 mknod -m 666 $LFS/dev/null c 1 3 &&
@@ -11,6 +13,6 @@ mount -vt tmpfs tmpfs $LFS/run &&
 if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi &&
-{ echo "Winner is linux virual kernel file system!"; exit 0; } ||
-{ echo "Loser is linux virual kernel file system!"; exit 1; } 
+{ echo "Winner is linux vitrual kernel file system!"; exit 0; } ||
+{ echo "Loser is linux vitrual kernel file system!"; exit 1; } 
 

@@ -1,21 +1,12 @@
 #!/bin/bash
+. install_help.sh
 
-time {
-app=gawk-4.2.1
-echo "Running $app"
-cd $LFS/sources
-rm -rf "$app"
-tar -xf "$app".tar.xz
-cd "$app" &&
+install_app() {
 ./configure --prefix=/tools &&
 sed -i '1522,1551s/mbstr[12]//g' test/Makefile &&
 make &&
 make check GAWKLOCALE='POSIX' &&
-make install &&
-{ echo "Winner is $app!"; status=0; } ||
-{ echo "Loser is $app!"; status=1; }
-cd $LFS/sources
-rm -rf "$app"
+make install 
 }
 
-exit "$status"
+install_app_nest 'gawk-4.2.1' "$LFS/sources"

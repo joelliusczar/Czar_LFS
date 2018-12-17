@@ -1,11 +1,6 @@
 #!/bin/bash
-time {
-app=tcl8.6.8
-echo "Running $app"
-cd $LFS/sources
-rm -rf "$app"
-tar -xf "$app"-src.tar.gz
-cd "$app" &&
+. install_help.sh
+install_app() {
 cd unix &&
 ./configure --prefix=/tools &&
 make && {
@@ -16,11 +11,7 @@ echo "END RUNNING OPTIONAL TEST"
 make install &&
 chmod -v u+w /tools/lib/libtcl8.6.so &&
 make install-private-headers &&
-ln -sv tclsh8.6 /tools/bin/tclsh &&
-{ echo "Winner is $app!"; status=0; } ||
-{ echo "Loser is $app"; status=1; }
-cd $LFS/sources
-rm -rf "$app"
+ln -sv tclsh8.6 /tools/bin/tclsh 
 }
 
-exit "$status"
+install_app_nest 'tcl8.6.8' "$LFS/sources"

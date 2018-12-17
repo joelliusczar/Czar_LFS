@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$LFS_sh" &&
+cd "$LFS_SH" &&
 bash 01_creating_dirs.sh &&
 bash 02_mk_essential_symlinks.sh &&
 bash 03_users_1.sh &&

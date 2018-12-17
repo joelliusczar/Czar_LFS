@@ -6,7 +6,6 @@ MYSH=$(readlink -f /bin/sh)
 echo "$MYSH" | grep -q bash || sudo ln -sfn /bin/bash /bin/sh
 
 if cat /proc/version | grep -q 'ubuntu'; then
-  set -o xtrace
   sudo apt-get update
   echo 'int main(){}' > dummy.c && g++ -o dummy dummy.c ||
   sudo apt-get -y install g++;
@@ -16,6 +15,10 @@ if cat /proc/version | grep -q 'ubuntu'; then
   use_profile=.profile
   root_profile=.profile
 fi
+
+if [ -e mysetup.sh ]; then
+    bash mysetup.sh 
+fi 
 
 if [ -z "$(sudo vgdisplay -A)"  ]; then
   sudo vgchange -ay vglfs;
@@ -58,6 +61,7 @@ sudo bash -c 'cat > /home/lfs/.bash_profile << "EOF"
 if [ -z "$auto_lfs" ]; then
   exec env -i HOME=$HOME TERM=$TERM PS1="'"\u:\w\$ "'" /bin/bash
 else
+  echo "'"Hi, from lfs .bash_profile "'"
   set +h
   umask 022
   LFS=/mnt/lfs
@@ -86,9 +90,7 @@ if ! sudo grep -F "$export_line" /root/"$root_profile"; then
   sudo bash -c "echo '$export_line' >> /root/$root_profile"
 fi &&
 
-if [ -e mysetup.sh ]; then
-bash mysetup.sh 
-fi &&
+
 
 echo "winner!" || echo "Loser!"
 

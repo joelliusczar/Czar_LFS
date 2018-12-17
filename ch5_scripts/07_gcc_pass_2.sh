@@ -1,29 +1,29 @@
 #!/bin/bash
-time {
-app=gcc-8.2.0
-echo "Running ${app}_pass_2"
-cd $LFS/sources
-rm -rf "$app"
-tar -xf "$app".tar.xz
-cd "$app" &&
+
+. install_help.sh
+
+install_app() {
+extra_msg='Pass 2'
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/include-fixed/limits.h &&
 for file in gcc/config/{linux,i386/linux{,64}}.h
 do
-cp -uv $file{,.orig}
+cp -uv $file{,.orig} &&
 sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
--e 's@/usr@/tools@g' $file.orig > $file
+-e 's@/usr@/tools@g' $file.orig > $file &&
 echo '
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
 #define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
-touch $file.orig
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file &&
+touch $file.orig ||
+return 1
 done &&
 case $(uname -m) in
 x86_64)
 sed -e '/m64=/s/lib64/lib/' \
--i.orig gcc/config/i386/t-linux64
+-i.orig gcc/config/i386/t-linux64 ||
+return 1
 ;;
 esac &&
 tar -xf ../mpfr-4.0.1.tar.xz &&
@@ -57,10 +57,9 @@ cc dummy.c
 coutput=$(readelf -l a.out | grep ': /tools')
 echo "$coutput"
 exp='[Requesting program interpreter: /tools/lib64/ld-linux-x86-64.so.2]'
-[ "$exp" != "$(echo $coutput | sed 's/^[[:space:]]*//')"  ] && status=1
+[ "$exp" != "$(echo $coutput | sed 's/^[[:space:]]*//')"  ] 
 rm -v dummy.c a.out
-cd $LFS/sources
-rm -rf "$app" 
+
 }
 
-exit "$status"
+install_app_nest 'install_app' 'gcc-8.2.0' "$LFS/sources"

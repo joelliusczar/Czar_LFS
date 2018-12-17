@@ -1,20 +1,11 @@
 #!/bin/bash
-time {
-app=bash-4.4.18
-echo "Running $app"
-cd $LFS/sources
-rm -rf "$app"
-tar -xf "$app".tar.gz
-cd "$app" &&
+. install_help.sh
+install_app() {
 ./configure --prefix=/tools --without-bash-malloc &&
 make &&
 make tests &&
 make install &&
-ln -sv bash /tools/bin/sh &&
-{ echo "Winner is $app!"; status=0; } ||
-{ echo "Loser is $app!"; status=1; };
-cd $LFS/sources
-rm -rf "$app"
+ln -sv bash /tools/bin/sh 
 }
 
-exit "$status"
+install_app_nest 'bash-4.4.18' "$LFS/sources"

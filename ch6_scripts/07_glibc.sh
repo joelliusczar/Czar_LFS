@@ -5,7 +5,7 @@ app=glibc-2.28
 
 install_app () {
 echo "Running $app"
-cd $LFS/sources
+cd /sources
 rm -rf "$app"
 tar -xf "$app".tar.xz
 cd "$app" &&
@@ -123,7 +123,7 @@ EOF
 
 time {
 install_app
-cd $LFS/sources
+cd /sources
 rm -rf "$app"
 }
 

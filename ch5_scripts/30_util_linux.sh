@@ -1,11 +1,6 @@
 #!/bin/bash
-time {
-app=util-linux-2.32.1
-echo "Running $app"
-cd $LFS/sources
-rm -rf "$app"
-tar -xf "$app".tar.xz
-cd "$app" &&
+. install_help.sh
+install_app() {
 ./configure --prefix=/tools \
 --without-python \
 --disable-makeinstall-chown \
@@ -13,11 +8,7 @@ cd "$app" &&
 --without-ncurses \
 PKG_CONFIG="" &&
 make &&
-make install &&
-{ echo "Winner is $app"; status=0; } ||
-{ echo "Loser is $app"; status=1; }
-cd $LFS/sources
-rm -rf "$app"
+make install 
 }
 
-exit "$status"
+install_app_nest 'util-linux-2.32.1' "$LFS/sources"
