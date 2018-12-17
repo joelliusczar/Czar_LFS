@@ -2,8 +2,15 @@
 
 . install_help.sh
 
+extra_pre_run() {
+    echo "Pass 1"
+}
+
+extra_post_run() {
+    echo "Pass 1"
+}
+
 install_app {
-	extra_msg='Pass 1'
 	tar -xf ../mpfr-4.0.1.tar.xz &&
 	mv -v mpfr-4.0.1 mpfr &&
 	tar -xf ../gmp-6.1.2.tar.xz &&

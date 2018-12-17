@@ -2,8 +2,15 @@
 
 . install_help.sh 
 
+extra_pre_run() {
+    echo "Pass 1"
+}
+
+extra_post_run() {
+    echo "Pass 1"
+}
+
 install_app() {
-	extra_msg='Pass 1'
 	mkdir -v build &&
 	cd build &&
 	../configure --prefix=/tools \

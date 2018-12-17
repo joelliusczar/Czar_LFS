@@ -3,12 +3,16 @@
 while [ "$#" -gt 0 ]; do
 case "$1" in
 --skip_setup) skip_setup=1 ;;
+--vg=*)
+vgarg="${1#*=}"
+volgroup="${vgarf:-vglfs}"
+;;
 *) : ;;
 esac
 shift
 done &&
 if [ "$skip_setup" != '1' ]; then
-bash setup1.sh ||
+bash setup1.sh "$volgroup" ||
 { echo "Setup 1 crashed!"; exit 1; }
 fi &&
 exec "$BASH"  -lc '

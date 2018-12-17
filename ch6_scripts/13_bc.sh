@@ -1,12 +1,12 @@
 #!/bin/bash
+. install_help.sh
 
-time {
-app=bc-1.07.1
-echo "Running $app"
-cd /sources
-rm -rf "$app"
-tar -xf "$app".tar.gz 
-cd "$app" &&
+extra_post_failure() {
+    rm -v /usr/lib/libncursesw.so.6;
+    rm -v /usr/lib/libncurses.so;
+}
+
+install_app() {
 (cat > bc/fix-libmath_h << "EOF"
 #! /bin/bash
 sed -e '1s/^/{"/' \
@@ -28,14 +28,7 @@ sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure &&
 --infodir=/usr/share/info &&
 make &&
 echo "quit" | ./bc/bc -l Test/checklib.b &&
-make install && 
-{ echo "Winner is $app"; status=0; } ||
-{ echo "Loser is $app";
-rm -v /usr/lib/libncursesw.so.6;
-rm -v /usr/lib/libncurses.so;
-status=1; }
-cd /sources &&
-rm -rf "$app"
+make install  
 }
 
-exit "$status"
+install_app_nest 'bc-1.07.1' "/sources"

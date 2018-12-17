@@ -1,25 +1,19 @@
 #!/bin/bash
 
-status=0
-app=glibc-2.28
+. install_help.sh
 
 install_app () {
-echo "Running $app"
-cd /sources
-rm -rf "$app"
-tar -xf "$app".tar.xz
-cd "$app" &&
 patch -Np1 -i ../glibc-2.28-fhs-1.patch &&
 ln -sfv /tools/lib/gcc /usr/lib &&
 case $(uname -m) in
 i?86) GCC_INCDIR=/usr/lib/$(uname -m)-pc-linux-gnu/8.2.0/include &&
   ln -sfv ld-linux.so.2 /lib/ld-lsb.so.3 ||
-  { echo "Loser is $app"; status=1; return; }
+  return 1;
 ;;
 x86_64) GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/8.2.0/include &&
   ln -sfv ../lib/ld-linux-x86-64.so.2 /lib64 &&
   ln -sfv ../lib/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3 ||
-  { echo "Loser is $app"; status=1; return; }
+  return 1;
 ;;
 esac &&
 rm -f /usr/include/limits.h &&
@@ -95,7 +89,7 @@ asia australasia backward pacificnew systemv; do
 zic -L /dev/null -d $ZONEINFO -y "sh yearistype.sh" ${tz} &&
 zic -L /dev/null -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz} &&
 zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz} ||
-{ echo "Loser is $app : timezones"; status=1; return; }
+{ echo "Loser is $app : timezones"; return 1; }
 done &&
 cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO &&
 zic -d $ZONEINFO -p America/New_York &&
@@ -115,16 +109,10 @@ EOF
 include /etc/ld.so.conf.d/*.conf
 
 EOF
-) &&
-{ echo "Winner is $app"; status=0; return; } ||
-{ echo "Loser is $app" status=1; return; }
+) 
 
 }
 
-time {
-install_app
-cd /sources
-rm -rf "$app"
-}
 
-exit "$status"
+
+install_app_nest 'glibc-2.28' "/sources"

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd "$LFS_SH"
 . install_help.sh
 
 install_app() {

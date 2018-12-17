@@ -4,6 +4,8 @@ extra_pre_success() {}
 extra_post_success() {}
 extra_pre_failure() {}
 extra_post_failure() {}
+extra_pre_run() {}
+extra_post_run() {}
 
 success_cleanup() {
   echo "Winner is $app"
@@ -25,6 +27,7 @@ install_app_nest() {
 	app="$1"
 	sources_dir="$2"
 	echo "running $app"
+    extra_pre_run;
 	cd "$sources_dir"
 	rm -rf "$app"
 	tar -xf "$app".tar.xz 2>/dev/null || tar -xf "$app".tar.gz 
@@ -32,4 +35,5 @@ install_app_nest() {
 	time {	
 		install_app; 
 	}
+    extra_post_run;
 }

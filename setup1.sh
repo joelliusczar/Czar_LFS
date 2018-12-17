@@ -1,5 +1,16 @@
 #!/bin/bash
 
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+--vg=*)
+vgarg="${1#*=}"
+volgroup="${vgarf:-vglfs}"
+;;
+*) : ;;
+esac
+shift
+done
+
 export LFS=/mnt/lfs
 
 MYSH=$(readlink -f /bin/sh)
@@ -21,16 +32,16 @@ if [ -e mysetup.sh ]; then
 fi 
 
 if [ -z "$(sudo vgdisplay -A)"  ]; then
-  sudo vgchange -ay vglfs;
+  sudo vgchange -ay "$volgroup";
 fi &&
 if [ ! -e $LFS ];then
  sudo mkdir -pv $LFS;
 fi &&
 if ! mountpoint $LFS -q ;then 
-  sudo mount -v /dev/vglfs/root $LFS
+  sudo mount -v /dev/"$volgroup"/root $LFS
 fi &&
 if [ "0" = "$(free -m | sed -e '1,2d' | awk '{ print $2 }')" ]; then
-  sudo swapon /dev/vglfs/swap;
+  sudo swapon /dev/"$volgroup"/swap;
 fi &&
 if [ ! -e $LFS/sources ]; then
  sudo mkdir -v $LFS/sources

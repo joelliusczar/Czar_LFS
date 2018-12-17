@@ -2,8 +2,15 @@
 
 . install_help.sh
 
+extra_pre_run() {
+    echo 'Api headers'
+}
+
+extra_post_run() {
+    echo 'Api headers'
+}
+
 install_app {
-extra_msg='Api headers'
 make mrproper &&
 make INSTALL_HDR_PATH=dest headers_install &&
 cp -rv dest/include/* /tools/include 

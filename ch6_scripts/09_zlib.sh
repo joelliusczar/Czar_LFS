@@ -1,22 +1,13 @@
 #!/bin/bash
+. install_help.sh
 
-time {
-app=zlib-1.2.11
-echo "Running $app"
-cd /sources
-rm -rf "$app"
-tar -xf "$app".tar.xz
-cd "$app" &&
+install_app() {
 ./configure --prefix=/usr &&
 make &&
 make check &&
 make install &&
 mv -v /usr/lib/libz.so.* /lib &&
-ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so &&
-{ echo "Winner is $app"; status=0; } ||
-{ echo "Loser is $app"; status=1; }
-cd /sources &&
-rm -rf "$app"
+ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so 
 }
 
-exit "$status"
+install_app_nest 'zlib-1.2.11' "/sources"

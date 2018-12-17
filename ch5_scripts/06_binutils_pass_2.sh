@@ -2,6 +2,14 @@
 
 . install_help.sh
 
+extra_pre_run() {
+    echo "Pass 2"
+}
+
+extra_post_run() {
+    echo "Pass 2"
+}
+
 install_app() {
   extra_msg='Pass 2'
   mkdir -v build &&

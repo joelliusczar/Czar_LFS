@@ -11,7 +11,7 @@
 /^ *tar -xf "$app/d;
 /^ *rm -rf "\$app"/d;
 /^ *{ echo "Loser/d;
-/^ *cd.*\/sources *$/d;
+/^ *cd.*\/sources *&\{0,2\}$/d;
 /^ *exit/{x;s/\n *\(.*\)[\n ]\+\(.*\)/install_app_nest '\1' "\2"/; };
 /.*&& *$/{N;/\n{ echo /{;s/&&//;P;d};P;D;}; 
 

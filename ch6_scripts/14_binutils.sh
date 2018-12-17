@@ -1,12 +1,7 @@
 #!/bin/bash
+. install_help.sh
 
-time {
-app=binutils-2.31.1
-echo "Running $app"
-cd /sources
-rm -rf "$app"
-tar -xf "$app".tar.xz
-cd "$app" &&
+install_app() {
 spawnls=$(expect -c "spawn ls" | sed -n 's/[\n\r]//p' ) &&
 echo "$spawnls"  &&
 [ "$spawnls" = 'spawn ls' ] &&
@@ -22,11 +17,7 @@ cd build &&
 --with-system-zlib &&
 make tooldir=/usr &&
 make -k check &&
-make tooldir=/usr install &&
-{ echo "Winner is $app"; status=0; } ||
-{ echo "Loser is $app"; status=1; }
-cd /sources &&
-rm -rf "$app"
+make tooldir=/usr install 
 }
 
-exit "$status"
+install_app_nest 'binutils-2.31.1' "/sources"
