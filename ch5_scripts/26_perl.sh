@@ -1,5 +1,7 @@
 #!/bin/bash
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 install_app() { 
 sh Configure -des -Dprefix=/tools -Dlibs=-lm -Uloclibpth -Ulocincpth &&
 make &&

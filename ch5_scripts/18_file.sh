@@ -1,5 +1,7 @@
 #!/bin/bash
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 
 install_app() {
 ./configure --prefix=/tools &&

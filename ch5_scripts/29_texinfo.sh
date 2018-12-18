@@ -1,5 +1,7 @@
 #!/bin/bash
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 install_app() {
 sed -i '5481,5485 s/({/(\\{/' tp/Texinfo/Parser.pm &&
 ./configure --prefix=/tools &&

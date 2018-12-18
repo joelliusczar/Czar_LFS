@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 
 extra_pre_run() {
     echo "Pass 1"
@@ -10,7 +12,7 @@ extra_post_run() {
     echo "Pass 1"
 }
 
-install_app {
+install_app () {
 	tar -xf ../mpfr-4.0.1.tar.xz &&
 	mv -v mpfr-4.0.1 mpfr &&
 	tar -xf ../gmp-6.1.2.tar.xz &&
@@ -63,7 +65,7 @@ install_app {
 	--disable-libstdcxx \
 	--enable-languages=c,c++ &&
 	make &&
-	make install 
+	make install
 }
 
 install_app_nest 'install_app' 'gcc-8.2.0' "$LFS/sources"

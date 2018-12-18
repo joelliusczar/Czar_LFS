@@ -1,5 +1,7 @@
 #!/bin/bash
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 install_app() {
 sed -i 's/tar cf a\.tar a/tar cf a\.tar a\/x a\/y a\/z/' \
 tests/difflink.at &&

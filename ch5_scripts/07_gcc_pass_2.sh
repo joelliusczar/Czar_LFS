@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 
 extra_pre_run() {
     echo "Pass 2"
@@ -11,7 +13,6 @@ extra_post_run() {
 }
 
 install_app() {
-extra_msg='Pass 2'
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/include-fixed/limits.h &&
 for file in gcc/config/{linux,i386/linux{,64}}.h

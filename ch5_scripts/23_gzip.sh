@@ -1,5 +1,7 @@
 #!/bin/bash
-. install_help.sh
+
+helper_path=${helper_path:-..}
+. "$helper_path/install_help.sh" 
 install_app() {
 sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c &&
 echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h &&

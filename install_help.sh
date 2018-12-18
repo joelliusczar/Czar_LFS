@@ -1,11 +1,11 @@
 #!/bin/bash
 
-extra_pre_success() {}
-extra_post_success() {}
-extra_pre_failure() {}
-extra_post_failure() {}
-extra_pre_run() {}
-extra_post_run() {}
+extra_pre_success() { :; }
+extra_post_success() { :; }
+extra_pre_failure() { :; }
+extra_post_failure() { :; }
+extra_pre_run() { :; }
+extra_post_run() { :; }
 
 success_cleanup() {
   echo "Winner is $app"

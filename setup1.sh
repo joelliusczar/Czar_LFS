@@ -4,7 +4,7 @@ while [ "$#" -gt 0 ]; do
     case "$1" in
 --vg=*)
 vgarg="${1#*=}"
-volgroup="${vgarf:-vglfs}"
+volgroup="${vgarg:-vglfs}"
 ;;
 *) : ;;
 esac
