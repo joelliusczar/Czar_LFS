@@ -18,4 +18,4 @@ make install &&
 make install-html 
 }
 
-install_app_nest 'install_app' 'gmp-6.1.2' '/sources'
+install_app_nest 'gmp-6.1.2' '/sources'

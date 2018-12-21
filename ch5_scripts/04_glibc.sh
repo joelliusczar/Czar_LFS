@@ -26,4 +26,4 @@ install_app() {
   [ "$exp" = "$(echo ${coutput} | sed 's/^[[:space:]]*//' )" ]
 }
 
-install_app_nest 'install_app' 'glibc-2.28' "$LFS/sources"
+install_app_nest 'glibc-2.28' "$LFS/sources"

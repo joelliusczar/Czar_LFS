@@ -32,4 +32,4 @@ install_app() {
   cp -v ld/ld-new /tools/bin
 }
 
-install_app_nest 'install_app' 'binutils-2.31.1' "$LFS/sources"
+install_app_nest 'binutils-2.31.1' "$LFS/sources"

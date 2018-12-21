@@ -71,4 +71,4 @@ rm -v dummy.c a.out
 
 }
 
-install_app_nest 'install_app' 'gcc-8.2.0' "$LFS/sources"
+install_app_nest 'gcc-8.2.0' "$LFS/sources"

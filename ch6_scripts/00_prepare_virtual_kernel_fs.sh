@@ -13,7 +13,7 @@ prepare_virtual_kernal_fs () {
   fi
   if [ -e $LFS/dev/console ]; then
     sudo rm -fv $LFS/dev/console || return 1
-  fi  
+  fi
   if [ -e $LFS/dev/null ]; then
     sudo rm -fv $LFS/dev/null || return 1
   fi 
