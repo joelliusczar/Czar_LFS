@@ -4,15 +4,20 @@
 prepare_virtual_kernal_fs () {
   [ -z "$LFS" ] && return 1
 
+  
+  if mountpoint $LFS/dev/pts -q; then
+    sudo umount $LFS/dev/pts || return 1
+  fi
+  if mountpoint $LFS/dev -q; then
+    sudo umount $LFS/dev || return 1
+  fi
   if [ -e $LFS/dev/console ]; then
     sudo rm -fv $LFS/dev/console || return 1
-  fi 
+  fi  
   if [ -e $LFS/dev/null ]; then
     sudo rm -fv $LFS/dev/null || return 1
   fi 
-  if mountpoint $LFS/dev/pts -q; then
-      sudo umount $LFS/dev/pts || return 1
-  fi 
+  
   if mountpoint $LFS/proc -q; then
       sudo umount $LFS/proc || return 1
   fi 

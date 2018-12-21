@@ -6,6 +6,9 @@ if [ -n "$LFS" ]; then
   
   if mountpoint $LFS/dev/pts -q; then
       sudo umount $LFS/dev/pts
+  fi
+  if mountpoint $LFS/dev -q; then
+    sudo umount $LFS/dev
   fi 
   if mountpoint $LFS/proc -q; then
       sudo umount $LFS/proc
