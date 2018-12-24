@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+  echo "Plase Run as Root"
+  exit 1
+fi
+
 while [ "$#" -gt 0 ]; do
 case "$1" in
 --skip_setup) skip_setup=1 ;;
