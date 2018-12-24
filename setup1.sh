@@ -58,7 +58,6 @@ if [ -z "$(shopt -s nullglob dotglob; echo $LFS/sources/*)" ]; then
   wget --input-file=wget-list --continue --directory-prefix=$LFS/sources;
   mydir=pwd
   pushd $LFS/sources
-    mv -v tcl8.6.8-src.tar.gz tcl8.6.8.tar.gz
     midsum -c "$mydir"/md5sums
   popd
 fi &&

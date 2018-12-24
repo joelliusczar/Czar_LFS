@@ -17,4 +17,4 @@ make install-private-headers &&
 ln -sv tclsh8.6 /tools/bin/tclsh 
 }
 
-install_app_nest 'tcl8.6.8' "$LFS/sources"
+install_app_nest 'tcl8.6.8' "$LFS/sources" 'tcl8.6.8-src'

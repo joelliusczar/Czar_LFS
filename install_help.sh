@@ -34,12 +34,14 @@ trap 'failure_cleanup' ERR
 install_app_nest() {
 	app="$1"
 	sources_dir="$2"
+  tar_name=${3:-"$app"}
   echo "Script: $self_file" | tee -a "$log_path"
   echo "running $app" | tee -a "$log_path"
   cat <(extra_pre_run) | tee -a "$log_path"
 	cd "$sources_dir"
 	rm -rf "$app"
-	tar -xf "$app".tar.xz 2>/dev/null || tar -xf "$app".tar.gz 
+	tar -xf "$tar_name".tar.xz 2>/dev/null || tar -xf "$tar_name".tar.gz  2>/dev/null ||
+    tar -xf "$tar_name".tar.bz2
 	cd "$app" &&
 	time {	
 		install_app; 
