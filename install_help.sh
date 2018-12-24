@@ -28,7 +28,7 @@ failure_cleanup() {
   cat <(extra_post_failure) | tee -a "$log_path"
 }
 
-trap '[ $? = 0] && success_cleanup' EXIT
+trap '[ $? = 0 ] && success_cleanup' EXIT
 trap 'failure_cleanup' ERR
 
 install_app_nest() {
@@ -46,5 +46,6 @@ install_app_nest() {
 	}
   xs=$? #store exit status so that extra_post_run below doesn't fuck it up
   cat <(extra_post_run) | tee -a "$log_path"
+  echo "Exit status is $xs" | tee -a "$log_path"
   return "$xs";
 }
