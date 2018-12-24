@@ -10,13 +10,13 @@ volgroup="${vgarg:-vglfs}"
 *) : ;;
 esac
 shift
-done &&
+done 
+export LFS=/mnt/lfs
+log_path=$LFS/lfs_install.log
 if [ "$skip_setup" != '1' ]; then
 bash setup1.sh --vg="$volgroup" ||
 { echo "Setup 1 crashed!"; exit 1; }
 fi
-export LFS=/mnt/lfs
-log_path=$LFS/lfs_install.log
 bash clean_up_lfs_dir.sh &&
 echo "" > "$log_path" &&
 chmod u=rw, g=rw, o=rw  "$log_path" &&
