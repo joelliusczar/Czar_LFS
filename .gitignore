@@ -1,2 +1,4 @@
 sources/
 experiment_files/
+
+*.swp
