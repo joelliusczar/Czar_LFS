@@ -27,7 +27,8 @@ failure_cleanup() {
   echo "Loser is $app" | tee -a "$log_path"
   cat <(extra_post_failure) | tee -a "$log_path"
 }
-trap 'success_cleanup' EXIT
+
+trap '[ $? = 0] && success_cleanup' EXIT
 trap 'failure_cleanup' ERR
 
 install_app_nest() {

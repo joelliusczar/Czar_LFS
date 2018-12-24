@@ -24,7 +24,7 @@ bash setup1.sh --vg="$volgroup" ||
 fi
 bash clean_up_lfs_dir.sh &&
 echo "" > "$log_path" &&
-chmod u=rw, g=rw, o=rw  "$log_path" &&
+chmod u=rw,g=rw,o=rw  "$log_path" &&
 cp -rv ch5_scripts install_help.sh /home/lfs/ &&
 sudo -u lfs env -i auto_lfs=t log_path="$log_path" TERM="$TERM" PS1='\u:\w\$ ' \
 bash -l ch5_scripts.sh &&
