@@ -2,26 +2,26 @@
 shopt -s extglob;
 shopt -s dotglob;
 if [ -n "$LFS" ]; then
-  sudo rm -rf $LFS/tools/*
+  rm -rf $LFS/tools/*
   
   if mountpoint $LFS/dev/pts -q; then
-      sudo umount $LFS/dev/pts
+      umount $LFS/dev/pts
   fi
   if mountpoint $LFS/dev -q; then
-    sudo umount $LFS/dev
+    umount $LFS/dev
   fi 
   if mountpoint $LFS/proc -q; then
-      sudo umount $LFS/proc
+      umount $LFS/proc
   fi 
   if mountpoint $LFS/sys -q; then
-      sudo umount $LFS/sys
+      umount $LFS/sys
   fi 
   if mountpoint $LFS/run -q; then
-      sudo umount $LFS/run
+      umount $LFS/run
   fi 
   
 
-  sudo rm -rf $LFS/!(tools|sources);
+  rm -rf $LFS/!(tools|sources);
 else 
   echo "Could not safely clean up files"
   exit 1;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 next_script="$1" &&
-sudo chroot "$LFS" /tools/bin/env -i \
+chroot "$LFS" /tools/bin/env -i \
 HOME=/root \
 TERM="$TERM" \
 PS1='(lfs chroot) \u:\w\$ ' \

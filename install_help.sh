@@ -2,8 +2,9 @@
 
 #As long as we source this file, $0 should be the script calling this
 #rather than 'install_help.sh' itself
-self_file="$0" 
-log_path=${1:-"$LFS/lfs_install.log"}
+self_file="$0"
+echo "$log_path" 
+log_path=${log_path:-"$LFS/lfs_install.log"}
 
 #these are left empty for scripts sourcing this one to overwrite
 extra_pre_success() { :; }
@@ -32,9 +33,8 @@ trap 'failure_cleanup' ERR
 install_app_nest() {
 	app="$1"
 	sources_dir="$2"
-  echo '' > "$log_path"
   echo "Script: $self_file" | tee -a "$log_path"
-	echo "running $app" | tee -a "$log_path"
+  echo "running $app" | tee -a "$log_path"
   cat <(extra_pre_run) | tee -a "$log_path"
 	cd "$sources_dir"
 	rm -rf "$app"
