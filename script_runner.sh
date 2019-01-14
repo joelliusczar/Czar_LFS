@@ -10,21 +10,24 @@ while [ "$#" -gt 0 ]; do
 		;;
 		--script_dir=*)
 			script_dir="${1#*=}"
+    ;;
 		*) : ;;	
 	esac
+  shift
 done
-. "$src_script" &&
 if [ -e "$scr_script" ]; then
 	echo "source script not found" 
 	exit 1
 fi &&
+. "$src_script" &&
 cd "$script_dir" &&
-for s in "$scripts"; do
+for s in "${scripts[@]}"; do
 	if [ -n "$at_test" ] && [ -z "$lastScript" ]; then
 		[ "$at_test" != "$s" ] && continue
 	fi	
 	bash "$s" && lastScript="$s" ||
 	{ echo "One of the blasted scripts failed"; exit 1; }
 done && 
+[ -n "$lastScript" ] &&
 { echo "All scripts succeeded!"; exit 0; } ||
-{ echo "Something else went wrong"; exit 1}
+{ echo "Something else went wrong"; exit 1; }

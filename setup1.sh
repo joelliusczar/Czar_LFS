@@ -7,15 +7,15 @@ fi
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
---vg=*)
+--volgroup=*)
 vgarg="${1#*=}"
-volgroup="${vgarg:-vglfs}"
 ;;
 *) : ;;
 esac
 shift
 done
 
+volgroup="${vgarg:-vglfs}"
 real_user=${SUDO_USER:-$(whoami)}
 LFS=${LFS:-/mnt/lfs}
 export LFS
