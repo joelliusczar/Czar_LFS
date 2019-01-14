@@ -8,6 +8,10 @@ sh -c 'cat > ~/.vimrc << "EOF"
 set number
 set noautoindent
 set tabstop=2
+noremap: <Left> ""
+noremap: <Right> ""
+noremap: <Up> ""
+noremap: <Down> ""
 EOF'
 
 git config --global user.email "joelliuscaesar@gmail.com"
