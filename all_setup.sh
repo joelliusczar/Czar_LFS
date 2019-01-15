@@ -28,7 +28,8 @@ export LFS=/mnt/lfs LFS_SH=/lfs_scripts
 log_path=$LFS/lfs_install.log
 echo 
 if [ "$lfs_ch" -lt 6 ]; then  
-  if [ "$skip_setup" != '1' ]; then
+  #I'm assuming that if at_test is present then we're already past the point where we might do setup
+  if [ "$skip_setup" != '1' ] && [ -z "$at_test" ]; then
     bash setup1.sh --volgroup="$volgroup" ||
     { echo "Setup 1 crashed!"; exit 1; }
   fi
@@ -48,6 +49,9 @@ mkdir -pv "$LFS""$LFS_SH" &&
 cp -rv ch6_scripts install_help.sh script_runner.sh \
   "$LFS""$LFS_SH" &&
 cd ch6_scripts &&
+if [ "$at_test" = '00_prepare_virtual_kernel_fs.sh' ]; then
+  at_test=''
+fi &&
 LFS="$LFS" bash 00_prepare_virtual_kernel_fs.sh &&
 (bash chroot.sh  "$LFS_SH"/script_runner.sh --src_script="$LFS_SH/ch6_scripts.sh" \
  --script_dir="$LFS_SH/ch6_scripts" --at_test="$at_test"  ) &&
