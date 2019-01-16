@@ -13,6 +13,8 @@ extra_pre_failure() { :; }
 extra_post_failure() { :; }
 extra_pre_run() { :; }
 extra_post_run() { :; }
+extra_pre_term() { :; }
+extra_post_term() { :; }
 
 success_cleanup() {
   echo "Winner is $app" | tee -a "$log_path"
@@ -28,6 +30,13 @@ failure_cleanup() {
   cat <(extra_post_failure) | tee -a "$log_path"
 }
 
+termination_cleanup() {
+  cat <(extra_pre_term) | tee -a "$log_path"
+  echo "Terminating $app" | tee -a "$log_path"
+  cat <(extra_post_term) | tee -a "$log_path"
+}
+
+trap 'termination_cleanup' SIGINT SIGQUIT SIGTERM
 trap '[ $? = 0 ] && success_cleanup' EXIT
 trap 'failure_cleanup' ERR
 

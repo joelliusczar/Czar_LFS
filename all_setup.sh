@@ -40,6 +40,7 @@ if [ "$lfs_ch" -lt 6 ]; then
   sudo -u lfs env -i auto_lfs=t log_path="$log_path" TERM="$TERM" PS1='\u:\w\$ ' \
   bash -l script_runner.sh --src_script="ch5_scripts.sh" --script_dir="ch5_scripts" --at_test="$at_test"
   xs=$?
+  at_test='' #if code goes in here then it implies that at_test was not meant for further sections
 else
   echo "skipping ch 5"
 fi &&
@@ -49,12 +50,17 @@ mkdir -pv "$LFS""$LFS_SH" &&
 cp -rv ch6_scripts install_help.sh script_runner.sh \
   "$LFS""$LFS_SH" &&
 cd ch6_scripts &&
+if [ -z "$at_test" ]; then
+  LFS="$LFS" bash 00_prepare_virtual_kernel_fs.sh
+  xs=$?
+fi &&
+[ "$xs" = "0" ] &&
 if [ "$at_test" = '00_prepare_virtual_kernel_fs.sh' ]; then
   at_test=''
 fi &&
-LFS="$LFS" bash 00_prepare_virtual_kernel_fs.sh &&
 (bash chroot.sh  "$LFS_SH"/script_runner.sh --src_script="$LFS_SH/ch6_scripts.sh" \
  --script_dir="$LFS_SH/ch6_scripts" --at_test="$at_test"  ) &&
+at_test='' && #if code goes in here then it implies that at_test was not meant for further sections 
 { echo "Everything has been a smashing success!"; exit 0; } ||
 { echo "Damnit fool! You've shot it all to hell! Fix it!"; exit 1; }
 
