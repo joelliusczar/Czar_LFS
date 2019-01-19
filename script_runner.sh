@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "In Script Runner"
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--at_test=*)

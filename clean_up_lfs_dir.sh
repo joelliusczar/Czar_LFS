@@ -29,4 +29,8 @@ fi
 shopt -u extglob;
 shopt -u dotglob;
 
+if [ $(stat -c %u $LFS/tools) != $(id -u lfs) ]; then
+  chown -R lfs $LFS/tools #sometimes we need to reset ownership if a previous run made it past the ch5 part  
+fi
+
 exit 0;

@@ -3,7 +3,6 @@
 #As long as we source this file, $0 should be the script calling this
 #rather than 'install_help.sh' itself
 self_file="$0"
-echo "$log_path" 
 log_path=${log_path:-"$LFS/lfs_install.log"}
 
 #these are left empty for scripts sourcing this one to overwrite
@@ -52,9 +51,15 @@ install_app_nest() {
 	tar -xf "$tar_name".tar.xz 2>/dev/null || tar -xf "$tar_name".tar.gz  2>/dev/null ||
     tar -xf "$tar_name".tar.bz2
 	cd "$app" &&
-	time {	
-		install_app; 
-	}
+  #I apologize for the redirection mess below
+  #I had 4 goals 
+  # 1: I wanted to be able to log the time it took to run a script
+  # 2: I also wanted to still print the time to the stdout
+  # 3: I did not want to log the output from the script itself
+  # 4: I wanted to retain the exit status of the script
+	((((time {	
+		(install_app 1>&3 2>&4; echo $? 1>&5;); 
+	}) 2>&1) | tee -a "$log_path" 1>&4) 5>&1 | (read xs; exit "$xs";)) 3>&1 4>&2
   xs=$? #store exit status so that extra_post_run below doesn't fuck it up
   cat <(extra_post_run) | tee -a "$log_path"
   echo "Exit status is $xs" | tee -a "$log_path"
