@@ -24,6 +24,11 @@ while [ "$#" -gt 0 ]; do
       #from a previous install attempt. It's usually root
       clean_out_uid="${1#*=}"
       ;;
+    --disable_full_logging)
+      #the full log file can get pretty dense, also continously adding to it 
+      #has got to get slow over time I would think.
+      disable_full_logging=1 
+      ;;
     *) : ;;
   esac
   shift
@@ -31,6 +36,8 @@ done
 volgroup="${vgarg:-vglfs}"
 checkpoint="${ch_arg:-0}"
 at_test="${testarg}"
+skip_setup="${skip_setup:-0}"
+disable_full_logging="${disable_full_logging:-0}"
 export LFS=/mnt/lfs LFS_SH=/lfs_scripts
 log_path=$LFS/lfs_install.log
 full_log_path=$LFS/lfs_full.log
@@ -51,7 +58,7 @@ ch5_install() {
   #we want it to go down all subsequent branches
   if [ "$checkpoint" -lt "$ch6_pre_chk" ]; then  
     #I'm assuming that if at_test is present then we're already past the point where we might do setup
-    if [ "$skip_setup" -lt 1 ] && [ -z "$at_test" ]; then
+    if [ "$skip_setup" -eq 1 ] && [ -z "$at_test" ]; then
       bash setup1.sh --volgroup="$volgroup" ||
       { echo "Setup 1 crashed!"; exit 1; }
     fi 
@@ -111,7 +118,9 @@ ch6_chroot_install() {
 }
 
 create_logs &&
-exec 1> >(tee "$full_log_path") 2>&1 &&
+if [ "$disable_full_logging" -eq 1 ]; then
+  exec 1> >(tee "$full_log_path") 2>&1
+fi &&
 # if blocks will continue even if the condition is false, but we want the logic to stop code
 # so using && with a block enables us to do that
 ch5_install && {
