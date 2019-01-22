@@ -24,10 +24,10 @@ while [ "$#" -gt 0 ]; do
       #from a previous install attempt. It's usually root
       clean_out_uid="${1#*=}"
       ;;
-    --disable_full_logging)
+--enable_full_logging)
       #the full log file can get pretty dense, also continously adding to it 
       #has got to get slow over time I would think.
-      disable_full_logging=1 
+      enable_full_logging=1 
       ;;
     *) : ;;
   esac
@@ -37,7 +37,7 @@ volgroup="${vgarg:-vglfs}"
 checkpoint="${ch_arg:-0}"
 at_test="${testarg}"
 skip_setup="${skip_setup:-0}"
-disable_full_logging="${disable_full_logging:-0}"
+enable_full_logging="${enable_full_logging:-0}"
 export LFS=/mnt/lfs LFS_SH=/lfs_scripts
 log_path=$LFS/lfs_install.log
 full_log_path=$LFS/lfs_full.log
@@ -58,24 +58,23 @@ ch5_install() {
   #we want it to go down all subsequent branches
   if [ "$checkpoint" -lt "$ch6_pre_chk" ]; then  
     #I'm assuming that if at_test is present then we're already past the point where we might do setup
-    if [ "$skip_setup" -eq 1 ] && [ -z "$at_test" ]; then
+    if [ "$skip_setup" -eq 0 ] && [ -z "$at_test" ]; then
       bash setup1.sh --volgroup="$volgroup" ||
       { echo "Setup 1 crashed!"; exit 1; }
     fi 
     if [ -z "$at_test" ]; then # if we have a specific script, we don't this guy deleting all the previous stuff
       #the clean up script is mostly for cleaning up stuff that happened in ch6, if we made it there in a previous
       #install attemp.
-      bash clean_up_lfs_dir.sh
+      bash clean_up_lfs_dir.sh "$log_path" "$full_log_path" &&
     fi &&
     if [ -n "$clean_out_uid" ]; then 
       #this bit of logic needs to be separated from the rest of the clean up code because 
       #we only want the clean up code to execute when we don't have a specific test.
       #but sometimes we want this to execute even if there is a specific test to start at
-      
       find "$LFS"/sources -maxdepth 0 -type d -user "$clean_out_uid" -exec rm -rf {} \;
       
     fi &&
-    create_logs && #clean up will have deleted these logs, so we create it following clean up
+    
     cp -rv ch5_scripts install_help.sh /home/lfs/ &&
 
     sudo -u lfs env -i auto_lfs=t log_path="$log_path" TERM="$TERM" PS1='\u:\w\$ ' \
@@ -118,7 +117,7 @@ ch6_chroot_install() {
 }
 
 create_logs &&
-if [ "$disable_full_logging" -eq 1 ]; then
+if [ "$enable_full_logging" -eq 1 ]; then
   exec 1> >(tee "$full_log_path") 2>&1
 fi &&
 # if blocks will continue even if the condition is false, but we want the logic to stop code
@@ -128,8 +127,9 @@ ch5_install && {
   #if code goes in here then it implies that at_test was not meant for further sections
   #so erase at_test if this is our chapter and we didn't just skip it, since skipping will also cause it
   #to go down this branch
-  #I could emptied at_test within the message, but religious reasons inclined me to avoid changing a global
+  #I could emptied at_test within the function, but religious reasons inclined me to avoid changing a global
   #variable from within a function
+
   if [ "$checkpoint" -eq "$ch5_chk" ]; then
     at_test='' 
   fi
