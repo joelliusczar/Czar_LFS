@@ -1,6 +1,7 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]; then #assuming that root uid is 0
+rootid=0
+if [ "$EUID" -ne "$rootid" ]; then #assuming that root uid is 0
   echo "Plase Run as Root"
   exit 1
 fi
@@ -18,11 +19,6 @@ while [ "$#" -gt 0 ]; do
       #this should be the file name of a script that you want to skip to. check ch5_scripts.sh ch6_scripts.sh
       #for reference
       testarg="${1#*=}"
-      ;;
-    --clean_out_uid=*) 
-      #provide the user id of someone else who might own files in the sources dir that need to be cleaned out
-      #from a previous install attempt. It's usually root
-      clean_out_uid="${1#*=}"
       ;;
 --enable_full_logging)
       #the full log file can get pretty dense, also continously adding to it 
@@ -64,16 +60,14 @@ ch5_install() {
     fi 
     if [ -z "$at_test" ]; then # if we have a specific script, we don't this guy deleting all the previous stuff
       #the clean up script is mostly for cleaning up stuff that happened in ch6, if we made it there in a previous
-      #install attemp.
-      bash clean_up_lfs_dir.sh "$log_path" "$full_log_path" &&
+      #install attempt.
+      bash clean_up_lfs_dir.sh "$log_path" "$full_log_path"
     fi &&
-    if [ -n "$clean_out_uid" ]; then 
-      #this bit of logic needs to be separated from the rest of the clean up code because 
-      #we only want the clean up code to execute when we don't have a specific test.
-      #but sometimes we want this to execute even if there is a specific test to start at
-      find "$LFS"/sources -maxdepth 0 -type d -user "$clean_out_uid" -exec rm -rf {} \;
-      
-    fi &&
+
+    #this bit of logic needs to be separated from the rest of the clean up code because 
+    #we only want the clean up code to execute when we don't have a specific test.
+    #but sometimes we want this to execute even if there is a specific test to start at
+    find "$LFS"/sources -maxdepth 1 -type d -user "$rootid" -exec rm -rf {} \; &&
     
     cp -rv ch5_scripts install_help.sh /home/lfs/ &&
 
