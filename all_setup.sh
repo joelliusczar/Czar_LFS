@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rootid=0
+rootid=$(id -u root)
 if [ "$EUID" -ne "$rootid" ]; then #assuming that root uid is 0
   echo "Plase Run as Root"
   exit 1
@@ -48,16 +48,18 @@ create_logs() {
   chmod u=rw,g=rw,o=rw  "$full_log_path"
 }
 
+run_pre_setup(){
+if [ "$skip_setup" -eq 0 ]; then
+  bash setup1.sh --volgroup="$volgroup" ||
+  { echo "Setup 1 crashed!"; return 1; }
+fi 
+}
+
 ch5_install() {
   #checkpoint should be less than to enter branch
   #if checkpoint is only = then it will only go down 1 branch.
   #we want it to go down all subsequent branches
   if [ "$checkpoint" -lt "$ch6_pre_chk" ]; then  
-    #I'm assuming that if at_test is present then we're already past the point where we might do setup
-    if [ "$skip_setup" -eq 0 ] && [ -z "$at_test" ]; then
-      bash setup1.sh --volgroup="$volgroup" ||
-      { echo "Setup 1 crashed!"; exit 1; }
-    fi 
     if [ -z "$at_test" ]; then # if we have a specific script, we don't this guy deleting all the previous stuff
       #the clean up script is mostly for cleaning up stuff that happened in ch6, if we made it there in a previous
       #install attempt.
@@ -67,12 +69,12 @@ ch5_install() {
     #this bit of logic needs to be separated from the rest of the clean up code because 
     #we only want the clean up code to execute when we don't have a specific test.
     #but sometimes we want this to execute even if there is a specific test to start at
-    find "$LFS"/sources -maxdepth 1 -type d -user "$rootid" -exec rm -rf {} \; &&
+    find "$LFS"/sources -maxdepth 1 -type d ! -user $(id -u lfs) -exec rm -rf {} \; &&
     
     cp -rv ch5_scripts install_help.sh /home/lfs/ &&
 
     sudo -u lfs env -i auto_lfs=t log_path="$log_path" TERM="$TERM" PS1='\u:\w\$ ' \
-      bash -l script_runner.sh --src_script="ch5_scripts.sh" --script_dir="ch5_scripts" --at_test="$at_test"  
+      bash -l script_looper.sh --src_script="ch5_scripts.sh" --script_dir="ch5_scripts" --at_test="$at_test"  
 
   else
     echo "skipping ch 5" | tee -a "$log_path"
@@ -103,13 +105,14 @@ ch6_chroot_install() {
   #checkpoint=2
   #3 will get replace with a constant, but I'm not sure what's beyond ch6 yet
   if [ "$checkpoint" -lt 3 ]; then
-    cp -rv ch6_scripts ch6_scripts.sh install_help.sh script_runner.sh \
+    cp -rv ch6_scripts ch6_scripts.sh install_help.sh script_looper.sh \
       "$LFS""$LFS_SH" &&
-    (bash chroot.sh "$LFS_SH"/script_runner.sh --src_script="$LFS_SH/ch6_scripts.sh" \
+    (bash chroot.sh "$LFS_SH"/script_looper.sh --src_script="$LFS_SH/ch6_scripts.sh" \
       --script_dir="$LFS_SH/ch6_scripts" --at_test="$at_test"  ) 
   fi
 }
 
+run_pre_setup &&
 create_logs &&
 if [ "$enable_full_logging" -eq 1 ]; then
   exec 1> >(tee "$full_log_path") 2>&1

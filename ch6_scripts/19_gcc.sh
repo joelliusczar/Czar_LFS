@@ -24,7 +24,8 @@ install_app() {
 	make &&
 	ulimit -s 32769 &&
 	chown -Rv nobody . &&
-	su nobody -s /bin/bash -c "PATH=$PATH make -k check" &&
-	
+printf '\033c'
+	su nobody -s /bin/bash -c "PATH=$PATH make -k check" 
+	../contrib/test_summary
 
 }
