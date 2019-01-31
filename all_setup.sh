@@ -86,19 +86,13 @@ ch5_install() {
 ch6_pre() {
   #checkpoint=1
   echo "ch6_pre"
-  if [ "$checkpoint" -lt "$ch6_chk" ]; then
-    bash change_owner.sh &&
-    mkdir -pv "$LFS""$LFS_SH" &&
-    if [ -z "$at_test" ]; then
-      pushd ch6_scripts && #change to dir to run 00_prepare_virtual_kernel_fs.sh
-        LFS="$LFS" bash 00_prepare_virtual_kernel_fs.sh
-        xs="$?"
-      popd
-      return "$xs"
-    fi 
-  else
-    echo "skipping pre ch6" | tee -a "$log_path"
-  fi
+  bash change_owner.sh &&
+  mkdir -pv "$LFS""$LFS_SH" &&
+    pushd ch6_scripts && #change to dir to run 00_prepare_virtual_kernel_fs.sh
+      LFS="$LFS" bash 00_prepare_virtual_kernel_fs.sh
+      xs="$?"
+    popd
+    return "$xs" 
 }
 
 ch6_chroot_install() {
@@ -133,7 +127,7 @@ ch5_install && {
 } &&
 ch6_pre && {
   echo 'ch6_pre finished' | tee -a "$log_path"
-  if [ "$checkpoint" -eq "$ch6_pre_chk" ]; then
+  if [ "$at_test" -eq '00_prepare_virtual_kernel_fs.sh' ]; then
     at_test='' 
   fi
 } &&

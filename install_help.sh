@@ -50,7 +50,7 @@ install_app_nest() {
   echo "running $app" | tee -a "$log_path"
   cat <(extra_pre_run) | tee -a "$log_path"
 	cd "$sources_dir"
-  if [ -e "$app" ] && [ $(stat -c %u "$app") != $(id -u lfs || echo '_') ] ||
+  if [ -e "$app" ] && [ $(stat -c %u "$app") != $(id -u lfs 2>/dev/null || echo '_') ] ||
       [ $(id -u) != $(id -u root) ]; then
     echo "$app already exists and it belongs to someone else"
     return 1  
