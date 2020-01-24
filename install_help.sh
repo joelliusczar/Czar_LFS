@@ -66,6 +66,16 @@ install_app_nest() {
   # 2: I also wanted to still print the time to the stdout
   # 3: I did not want to log the output from the script itself
   # 4: I wanted to retain the exit status of the script
+  
+  # - innermost subshell:
+  # - Redirects stdout to 3, redirects stderr to 4 for install_app
+  # - echos the exit code of install_app, redirects the output of the echo to 5
+  # - time subshell 
+  # - redirects stderr to stdin, pipes output to tee, redirects stdout to 4
+  # - redirects 5 to stdout, which means we're outputting the exit code of install_app
+  # - pipe previously mentioned exit code to subshell which reads it and exits something with that exit code
+  # - move stdout from 3 and back to 1, move stderr from 4 back to 2
+  # - xs=$? stores in the outermost scope the exit code from install_app
 
 	((((time {	
 		(install_app 1>&3 2>&4; echo $? 1>&5;); 
